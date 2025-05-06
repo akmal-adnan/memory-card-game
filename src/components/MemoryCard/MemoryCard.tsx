@@ -1,17 +1,46 @@
 import styles from '@/components/MemoryCard/styles.module.scss';
 import DATA from '@/data/data';
+import { CardProps, Pokemon } from '@/utils/Pokemon';
 
-const data = DATA.PokemonData.data.pokemons.results;
+type Props = {
+  data: Pokemon[];
+  selectedCards: CardProps[];
+  matchedCards: CardProps[];
+  handleClick: (name: string, index: number) => void;
+};
 
-export const MemoryCard = () => {
-  const pokemonData = data.slice(0, 12);
-
+export const MemoryCard = ({
+  data,
+  matchedCards,
+  selectedCards,
+  handleClick,
+}: Props) => {
   return (
     <div className={styles.container}>
-      {pokemonData.map((item, index) => {
+      {data.map((item, index) => {
+        const selectedCardEntry = selectedCards.find(
+          (val) => val.index === index
+        );
+        const matchedCardEntry = matchedCards.find(
+          (val) => val.index === index
+        );
+        const isDisabled = matchedCardEntry ? true : false;
+
+        const isOnClickAvailable = selectedCardEntry
+          ? () => {}
+          : () => handleClick(item.name, index);
+
+        const matchedStyle =
+          selectedCardEntry || matchedCardEntry ? styles.flipped : '';
+
         return (
-          <div key={index} className={styles.cardContainer}>
-            <div className={styles.cardInner}>
+          <button
+            key={index}
+            className={styles.cardContainer}
+            disabled={isDisabled}
+            onClick={isOnClickAvailable}
+          >
+            <div className={`${styles.cardInner} ${matchedStyle}`}>
               <div className={styles.cardFront}>
                 <img
                   className={styles.pokeballImage}
@@ -28,7 +57,7 @@ export const MemoryCard = () => {
                 />
               </div>
             </div>
-          </div>
+          </button>
         );
       })}
     </div>

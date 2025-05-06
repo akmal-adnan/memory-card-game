@@ -1,10 +1,14 @@
+import '@/index.css';
+import client from '@/modules/api/apolloclient.ts';
+import App from '@/pages/App';
+import { ApolloProvider } from '@apollo/client';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './pages/App.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </StrictMode>
 );
