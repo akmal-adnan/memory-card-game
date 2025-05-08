@@ -22,6 +22,8 @@ export const GameLayout = () => {
     turnCard,
   } = useMemoryGame({ pokemonGen, totalCard });
 
+  console.log('Test commit');
+
   return (
     <>
       <div className={styles.container}>
