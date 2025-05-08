@@ -1,5 +1,5 @@
 import '@/index.css';
-import client from '@/modules/api/apolloclient.ts';
+import client from '@/modules/api/apolloClient.ts';
 import App from '@/pages/App';
 import { ApolloProvider } from '@apollo/client';
 import { StrictMode } from 'react';
