@@ -1,6 +1,5 @@
 .container {
   gap: 10px;
-  margin-top: 50px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -20,17 +19,6 @@
   //   margin-inline: 150px;
   // }
 }
-
-// .cardContainer {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   border-radius: 0.3rem;
-//   background-color: white;
-//   height: 140px;
-//   width: 140px;
-//   cursor: pointer;
-// }
 
 .cardContainer {
   display: flex;
@@ -76,6 +64,8 @@
     .cardBack {
       background-color: beige;
       transform: rotateY(180deg);
+      transition: background-color 0.2s ease;
+      transition-delay: 0.5s;
     }
   }
 }
@@ -96,4 +86,9 @@
   width: 100%;
   height: auto;
   max-width: 100px;
+}
+
+.cardMatched {
+  background-color: rgb(118, 118, 118) !important;
+  pointer-events: none;
 }

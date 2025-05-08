@@ -1,5 +1,5 @@
 import { PokemonDataProps } from '@/utils/Pokemon';
-import { ApolloError, gql, useQuery } from '@apollo/client';
+import { ApolloError, gql, useLazyQuery } from '@apollo/client';
 
 export type GetPokemonParams = {
   offset: number;
@@ -12,14 +12,17 @@ export type GetPokemonResults = {
   data?: PokemonDataProps;
 };
 
+// Available Query
+// count
+// next
+// previous
+// status
+// message
+// results
+
 const GET_POKEMONS = gql`
   query pokemons($limit: Int, $offset: Int) {
     pokemons(limit: $limit, offset: $offset) {
-      count
-      next
-      previous
-      status
-      message
       results {
         id
         name
@@ -29,14 +32,16 @@ const GET_POKEMONS = gql`
   }
 `;
 
-export const useGetPokemonList = ({
-  offset = 0,
-  limit = 10,
-}: GetPokemonParams) => {
-  const { loading, error, data }: GetPokemonResults =
-    useQuery<PokemonDataProps>(GET_POKEMONS, {
-      variables: { offset, limit },
+export const useGetPokemonList = () => {
+  const [fetchPokemonList, { data, loading, error }] =
+    useLazyQuery<PokemonDataProps>(GET_POKEMONS, {
+      fetchPolicy: 'network-only',
     });
 
-  return { loading, error, data };
+  return {
+    fetchPokemonList,
+    data,
+    loading,
+    error,
+  };
 };

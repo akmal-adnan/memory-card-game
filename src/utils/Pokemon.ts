@@ -1,3 +1,9 @@
+export type PokemonGeneration = {
+  value: string;
+  limit: string;
+  label: string;
+};
+
 export type Pokemon = Readonly<{
   id: number;
   name: string;
@@ -23,11 +29,10 @@ export type CardProps = {
 };
 
 // Get random array of number based on total cards
-const getRandomIndices = (data: Pokemon[]) => {
-  const TOTALCARD = 10;
+const getRandomIndices = (data: Pokemon[], totalCard: number) => {
   const randomIndicesArray: number[] = [];
 
-  for (let i = 0; i < TOTALCARD / 2; i++) {
+  for (let i = 0; i < totalCard / 2; i++) {
     const randomNum = Math.floor(Math.random() * data.length);
     if (!randomIndicesArray.includes(randomNum)) {
       randomIndicesArray.push(randomNum);
@@ -40,8 +45,8 @@ const getRandomIndices = (data: Pokemon[]) => {
 };
 
 // Get pokemon data based on the index
-const getDataSlice = async (data: Pokemon[]) => {
-  const randomIndices = Pokemon.getRandomIndices(data);
+const getDataSlice = async (data: Pokemon[], totalCard: number) => {
+  const randomIndices = Pokemon.getRandomIndices(data, totalCard);
   const dataSlice = randomIndices.reduce((array: Pokemon[], index) => {
     array.push(data[index]);
     return array;

@@ -2,21 +2,28 @@ import {
   GetPokemonParams,
   useGetPokemonList,
 } from '@/modules/api/useGetPokemonList';
-import { CardProps, Pokemon } from '@/utils/Pokemon';
+import { CardProps, Pokemon, PokemonGeneration } from '@/utils/Pokemon';
 import { useEffect, useState } from 'react';
 
-export function useMemoryGame() {
+type Props = {
+  pokemonGen: PokemonGeneration;
+  totalCard: string;
+};
+
+export function useMemoryGame({ pokemonGen, totalCard }: Props) {
   const [isGameStart, setGameStart] = useState(false);
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
   const [selectedCards, setSelectedCards] = useState<CardProps[]>([]);
   const [matchedCards, setMatchedCards] = useState<CardProps[]>([]);
 
   const currentOffset: GetPokemonParams = {
-    offset: 0,
-    limit: 100,
+    limit: Number(pokemonGen.limit),
+    offset: Number(pokemonGen.value),
   };
 
-  const { data, error, loading: isLoading } = useGetPokemonList(currentOffset);
+  const { fetchPokemonList, error, loading: isLoading } = useGetPokemonList();
+
+  const cardLimit = Number(totalCard);
 
   useEffect(() => {
     if (
@@ -38,13 +45,16 @@ export function useMemoryGame() {
 
   const handleStartGame = async () => {
     try {
-      const currentData = data?.pokemons.results;
+      const { data: fetchedData } = await fetchPokemonList({
+        variables: currentOffset,
+      });
+      const currentData = fetchedData?.pokemons?.results;
 
       if (!currentData) {
         throw new Error(`Could not fetch data from API: ${error}`);
       }
 
-      const dataSlice = await Pokemon.getDataSlice(currentData);
+      const dataSlice = await Pokemon.getDataSlice(currentData, cardLimit);
       const pokemonArray = Pokemon.getPokemonArray(dataSlice);
       setPokemonData(pokemonArray);
       setGameStart(true);

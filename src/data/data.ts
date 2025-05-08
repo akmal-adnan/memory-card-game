@@ -1,47 +1,5 @@
 import pokeballImage from '@/assets/pokeball-logo.png';
 
-const dummyData = {
-  category: [
-    {
-      name: 'Animals and nature',
-      value: 'animals-and-nature',
-    },
-    {
-      name: 'Food and drink',
-      value: 'food-and-drink',
-    },
-    {
-      name: 'Travel and places',
-      value: 'travel-and-places',
-    },
-    {
-      name: 'Objects',
-      value: 'objects',
-    },
-    {
-      name: 'Symbols',
-      value: 'symbols',
-    },
-  ],
-  number: [
-    {
-      value: '10',
-    },
-    {
-      value: '20',
-    },
-    {
-      value: '30',
-    },
-    {
-      value: '40',
-    },
-    {
-      value: '50',
-    },
-  ],
-};
-
 const PokemonData = {
   data: {
     pokemons: {
@@ -651,10 +609,27 @@ const PokemonData = {
   },
 };
 
+const pokemonGenerations = [
+  { value: '0', limit: '150', label: 'Generation Ⅰ' },
+  { value: '151', limit: '100', label: 'Generation Ⅱ' },
+  { value: '251', limit: '135', label: 'Generation Ⅲ' },
+  { value: '386', limit: '107', label: 'Generation Ⅳ' },
+  { value: '493', limit: '156', label: 'Generation Ⅴ' },
+];
+
+const cardAmounts = [
+  { value: '10', label: '10 Cards' },
+  { value: '20', label: '20 Cards' },
+  { value: '30', label: '30 Cards' },
+  { value: '40', label: '40 Cards' },
+  { value: '50', label: '50 Cards' },
+];
+
 const DATA = {
-  dummyData,
   PokemonData,
   pokeballImage,
+  pokemonGenerations,
+  cardAmounts,
 };
 
 export default DATA;

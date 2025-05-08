@@ -1,4 +1,4 @@
-import styles from '@/components/MemoryCard/styles.module.scss';
+import styles from '@/components/GameLayout/MemoryCard/styles.module.scss';
 import DATA from '@/data/data';
 import { CardProps, Pokemon } from '@/utils/Pokemon';
 
@@ -33,6 +33,8 @@ export const MemoryCard = ({
         const matchedStyle =
           selectedCardEntry || matchedCardEntry ? styles.flipped : '';
 
+        const matchedCard = matchedCardEntry ? styles.cardMatched : '';
+
         return (
           <button
             key={index}
@@ -49,7 +51,7 @@ export const MemoryCard = ({
                 />
               </div>
 
-              <div className={styles.cardBack}>
+              <div className={`${styles.cardBack} ${matchedCard}`}>
                 <img
                   className={styles.imageStyle}
                   src={item.artwork}
