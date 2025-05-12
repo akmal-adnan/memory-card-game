@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react';
 type Props = {
   pokemonGen: PokemonGeneration;
   totalCard: string;
+  toggleDialog: () => void;
 };
 
-export function useMemoryGame({ pokemonGen, totalCard }: Props) {
+export function useMemoryGame({ pokemonGen, totalCard, toggleDialog }: Props) {
   const [isGameStart, setGameStart] = useState(false);
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
   const [selectedCards, setSelectedCards] = useState<CardProps[]>([]);
@@ -39,9 +40,12 @@ export function useMemoryGame({ pokemonGen, totalCard }: Props) {
 
   useEffect(() => {
     if (pokemonData.length && matchedCards.length === pokemonData.length) {
+      setTimeout(() => {
+        toggleDialog();
+      }, 1000);
       console.log('All cards matched!');
     }
-  }, [matchedCards, pokemonData]);
+  }, [matchedCards, pokemonData, toggleDialog]);
 
   const handleStartGame = async () => {
     try {
@@ -74,6 +78,13 @@ export function useMemoryGame({ pokemonGen, totalCard }: Props) {
     }
   };
 
+  const handleResetGame = () => {
+    setGameStart(false);
+    setPokemonData([]);
+    setSelectedCards([]);
+    setMatchedCards([]);
+  };
+
   return {
     isGameStart,
     isLoading,
@@ -82,5 +93,6 @@ export function useMemoryGame({ pokemonGen, totalCard }: Props) {
     matchedCards,
     handleStartGame,
     turnCard,
+    handleResetGame,
   };
 }
