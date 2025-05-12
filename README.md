@@ -55,8 +55,22 @@ export default tseslint.config({
 # Memory Card Game
 
 ### This is a simple memory card game is using on free pokemon api
-Mainly used for educational purpose
 #### Website: https://pmcg.netlify.app/
+
+- Mainly used for educational purpose
+- Project is created using vite + react + typescript + sass
+- Auto delete unused import
+- Watch scss and auto created scss module
+- Has PR workflow checking typescript and linting
+
+```
+Future todos:
+- More pokemon generation
+- Unit & integration testing
+- Add sound effect
+- Add scores/timer
+- Maybe husky for commit check
+```
 
 Preview: 
 <img width="1012" alt="Screenshot 2025-05-12 at 11 13 54 PM" src="https://github.com/user-attachments/assets/9d21d186-67f0-4b34-aa7a-5b0ee2798251" />
