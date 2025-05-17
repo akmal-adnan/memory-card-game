@@ -3,7 +3,7 @@ import {
   useGetPokemonList,
 } from '@/modules/api/useGetPokemonList';
 import { CardProps, Pokemon, PokemonGeneration } from '@/utils/Pokemon';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 type Props = {
   pokemonGen: PokemonGeneration;
@@ -17,14 +17,29 @@ export function useMemoryGame({ pokemonGen, totalCard, toggleDialog }: Props) {
   const [selectedCards, setSelectedCards] = useState<CardProps[]>([]);
   const [matchedCards, setMatchedCards] = useState<CardProps[]>([]);
 
-  const currentOffset: GetPokemonParams = {
-    limit: Number(pokemonGen.limit),
-    offset: Number(pokemonGen.value),
-  };
+  const currentOffset = useMemo<GetPokemonParams>(
+    () => ({
+      limit: Number(pokemonGen.limit),
+      offset: Number(pokemonGen.value),
+    }),
+    [pokemonGen.limit, pokemonGen.value]
+  );
 
   const { fetchPokemonList, error, loading: isLoading } = useGetPokemonList();
 
   const cardLimit = Number(totalCard);
+
+  // Timer state and ref
+  const [displayTime, setDisplayTime] = useState('00:00');
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timeElapsed = useRef(0);
+
+  // Format seconds to mm:ss
+  const formatTime = (seconds: number) => {
+    const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const ss = String(seconds % 60).padStart(2, '0');
+    return `${mm}:${ss}`;
+  };
 
   useEffect(() => {
     if (
@@ -38,8 +53,34 @@ export function useMemoryGame({ pokemonGen, totalCard, toggleDialog }: Props) {
     }
   }, [selectedCards]);
 
+  // Start/stop timer based on game state
+  useEffect(() => {
+    if (isGameStart) {
+      setDisplayTime('00:00');
+      timeElapsed.current = 0;
+      timerRef.current = setInterval(() => {
+        timeElapsed.current += 1;
+        setDisplayTime(formatTime(timeElapsed.current));
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setDisplayTime('00:00');
+      timeElapsed.current = 0;
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isGameStart]);
+
   useEffect(() => {
     if (pokemonData.length && matchedCards.length === pokemonData.length) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
       setTimeout(() => {
         toggleDialog();
       }, 1000);
@@ -47,7 +88,7 @@ export function useMemoryGame({ pokemonGen, totalCard, toggleDialog }: Props) {
     }
   }, [matchedCards, pokemonData, toggleDialog]);
 
-  const handleStartGame = async () => {
+  const handleStartGame = useCallback(async () => {
     try {
       const { data: fetchedData } = await fetchPokemonList({
         variables: currentOffset,
@@ -65,25 +106,28 @@ export function useMemoryGame({ pokemonGen, totalCard, toggleDialog }: Props) {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [cardLimit, currentOffset, error, fetchPokemonList]);
 
-  const turnCard = (name: string, index: number) => {
-    if (selectedCards.length < 2) {
-      setSelectedCards((prevSelectedCards) => [
-        ...prevSelectedCards,
-        { name, index },
-      ]);
-    } else if (selectedCards.length === 2) {
-      setSelectedCards([{ name, index }]);
-    }
-  };
+  const turnCard = useCallback(
+    (name: string, index: number) => {
+      if (selectedCards.length < 2) {
+        setSelectedCards((prevSelectedCards) => [
+          ...prevSelectedCards,
+          { name, index },
+        ]);
+      } else if (selectedCards.length === 2) {
+        setSelectedCards([{ name, index }]);
+      }
+    },
+    [selectedCards.length]
+  );
 
-  const handleResetGame = () => {
+  const handleResetGame = useCallback(() => {
     setGameStart(false);
     setPokemonData([]);
     setSelectedCards([]);
     setMatchedCards([]);
-  };
+  }, []);
 
   return {
     isGameStart,
@@ -94,5 +138,6 @@ export function useMemoryGame({ pokemonGen, totalCard, toggleDialog }: Props) {
     handleStartGame,
     turnCard,
     handleResetGame,
+    displayTime,
   };
 }

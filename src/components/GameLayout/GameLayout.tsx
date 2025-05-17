@@ -23,6 +23,7 @@ export const GameLayout = () => {
     handleStartGame,
     turnCard,
     handleResetGame,
+    displayTime,
   } = useMemoryGame({ pokemonGen, totalCard, toggleDialog });
 
   const handleRestart = () => {
@@ -48,6 +49,12 @@ export const GameLayout = () => {
           />
         )}
 
+        {isGameStart && (
+          <div className={styles.timerContainer}>
+            <h1>{displayTime}</h1>
+          </div>
+        )}
+
         {isGameStart && !isLoading && (
           <MemoryCard
             data={pokemonData}
@@ -61,7 +68,7 @@ export const GameLayout = () => {
           <div className={styles.dialogContainer}>
             <h1>Hooray!</h1>
             <h2>You have compeleted the challenge 🎉</h2>
-            <h1>Time: 10:39</h1>
+            <h1>Time: {displayTime}</h1>
 
             <button
               type="button"
@@ -69,7 +76,7 @@ export const GameLayout = () => {
               disabled={isLoading}
               onClick={handleRestart}
             >
-              Restart Now →
+              New Game →
             </button>
           </div>
         </Dialog>
