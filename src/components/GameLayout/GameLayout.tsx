@@ -31,6 +31,8 @@ export const GameLayout = () => {
     toggleDialog();
   };
 
+  console.log('Test commit');
+
   return (
     <>
       <div className={styles.container} onClick={toggleDialog}>
