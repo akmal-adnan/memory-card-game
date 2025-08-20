@@ -1,13 +1,15 @@
+import matchedCardSound from '@/assets/sounds/notification.mp3';
 import { MemoryCard } from '@/components/GameLayout/MemoryCard/MemoryCard';
 import { SelectionCard } from '@/components/GameLayout/SelectionCard/SelectionCard';
 import styles from '@/components/GameLayout/styles.module.scss';
 import DATA from '@/data/data';
 import { useMemoryGame } from '@/modules/hooks/useMemoryGame';
 import { PokemonGeneration } from '@/utils/Pokemon';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDialog } from '../Dialog/useDialog';
 
 export const GameLayout = () => {
+  const matchedAudioRef = useRef<HTMLAudioElement | null>(null);
   const [pokemonGen, setPokemonGen] = useState<PokemonGeneration>(
     DATA.pokemonGenerations[0]
   );
@@ -31,8 +33,26 @@ export const GameLayout = () => {
     toggleDialog();
   };
 
+  const prevMatchedCount = useRef(matchedCards.length);
+
+  useEffect(() => {
+    if (matchedCards.length > prevMatchedCount.current) {
+      setTimeout(() => {
+        if (matchedAudioRef.current) {
+          matchedAudioRef.current.currentTime = 0;
+          matchedAudioRef.current.play().catch((err) => {
+            console.warn('Audio play was blocked:', err);
+          });
+        }
+      }, 500);
+    }
+    prevMatchedCount.current = matchedCards.length;
+  }, [matchedCards]);
+
   return (
     <>
+      <audio ref={matchedAudioRef} src={matchedCardSound} preload="auto" />
+
       <div className={styles.container} onClick={toggleDialog}>
         <h1>Memory Card Game</h1>
       </div>
