@@ -1,4 +1,4 @@
-import pokeballImage from '@/assets/pokeball-logo.png';
+import pokeballImage from '@/assets/images/pokeball-logo.png';
 
 const PokemonData = {
   data: {
