@@ -49,6 +49,8 @@ export const GameLayout = () => {
     prevMatchedCount.current = matchedCards.length;
   }, [matchedCards]);
 
+  console.log('Test commit');
+
   return (
     <>
       <audio ref={matchedAudioRef} src={matchedCardSound} preload="auto" />
